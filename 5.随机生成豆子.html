@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    html,body{
+        width:100%;
+        height:100%;
+        overflow: hidden;
+    }
+    #canvas{
+        margin:100px auto;
+        border:1px solid green;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="600" height="600"></canvas>
+    <script>
+    var canvas = document.querySelector('#canvas');
+    var ctx = canvas.getContext('2d');
+    function generateDoudou(){
+        var x = Math.floor(Math.random() * 600);
+        x = x - x % 50;
+        var y = Math.floor(Math.random() * 600);
+        y = y - y % 50;
+        return {
+            x:x,
+            y,y
+        }
+    }
+    // 10px * 10px
+    var snakePos = {
+        step:50,
+        width:50,
+        height:50,
+        head:{
+            x:200,
+            y:400
+        },
+        node:[
+            {
+                x:150,
+                y:400
+            }
+        ],
+        doudou:generateDoudou()
+    };
+    function drawSnake(){
+        ctx.fillStyle = "pink";
+        ctx.fillRect( snakePos.head.x, snakePos.head.y,snakePos.width,snakePos.height);
+        ctx.fillStyle = "green";
+        for(var i=0;i<snakePos.node.length;i++){
+            ctx.fillRect( snakePos.node[i].x, snakePos.node[i].y,snakePos.width,snakePos.height);
+        }
+    }
+    function drawDoudou(){
+        ctx.fillStyle = "yellow";
+        ctx.fillRect( snakePos.doudou.x, snakePos.doudou.y,snakePos.width,snakePos.height);
+    }
+    function init(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        drawSnake()
+        drawDoudou()
+    }
+    init();
+    window.addEventListener('keyup',function(e){
+        var tempX = snakePos.node[snakePos.node.length - 1].x;
+        var tempY = snakePos.node[snakePos.node.length - 1].y;
+        for(var i=snakePos.node.length - 1;i>0;i--){
+            snakePos.node[i].x = snakePos.node[i-1].x;
+            snakePos.node[i].y = snakePos.node[i-1].y;
+        }
+        snakePos.node[0].x = snakePos.head.x;
+        snakePos.node[0].y = snakePos.head.y;
+        switch(e.keyCode){
+            case 39:
+                // console.log("右");
+                snakePos.head.x += snakePos.step;
+                if(snakePos.head.x === snakePos.doudou.x && snakePos.head.y === snakePos.doudou.y){
+                    snakePos.node.push({x:tempX,y:tempY});
+                    snakePos.doudou = generateDoudou();
+                }
+                init();
+                break;
+            case 37:
+                // console.log("左");
+                snakePos.head.x -= snakePos.step;
+                if(snakePos.head.x === snakePos.doudou.x && snakePos.head.y === snakePos.doudou.y){
+                    snakePos.node.push({x:tempX,y:tempY});
+                    snakePos.doudou = generateDoudou();
+                }
+                init();
+                break;
+            case 38:
+                // console.log("上");
+                snakePos.head.y -= snakePos.step;
+                if(snakePos.head.x === snakePos.doudou.x && snakePos.head.y === snakePos.doudou.y){
+                    snakePos.node.push({x:tempX,y:tempY});
+                    snakePos.doudou = generateDoudou();
+                }
+                init();
+                break;
+            case 40:
+                // console.log("下");
+                snakePos.head.y += snakePos.step;
+                if(snakePos.head.x === snakePos.doudou.x && snakePos.head.y === snakePos.doudou.y){
+                    snakePos.node.push({x:tempX,y:tempY});
+                    snakePos.doudou = generateDoudou();
+                }
+                init();
+                break;
+        }
+    })
+    </script>
+</body>
+</html>
